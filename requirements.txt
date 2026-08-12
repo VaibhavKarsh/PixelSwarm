@@ -1,0 +1,8 @@
+ollama>=0.6.2
+# Imported directly by scripts/smoke_test_model.py and scripts/benchmark_models.py
+# to catch connection/timeout errors by type. It arrives transitively via ollama,
+# but pin it explicitly since we import it ourselves.
+httpx>=0.27
+# Renderer only (pixel_world/). The harness, the swarm and the whole test suite
+# run without it; only scripts/render_trace.py needs it.
+Pillow>=10.0

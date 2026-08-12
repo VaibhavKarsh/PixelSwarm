@@ -1,0 +1,11 @@
+[
+  {"type": "chat_hype_spike", "intensity": 0.9,  "ts": 10.0,  "meta": {"source": "alt_scenario", "note": "opens hot rather than calm - the canonical sequence starts idle"}},
+  {"type": "game_danger",     "intensity": 0.85, "ts": 25.0,  "meta": {"source": "alt_scenario", "note": "first danger, arriving mid-celebration"}},
+  {"type": "game_danger",     "intensity": 0.95, "ts": 40.0,  "meta": {"source": "alt_scenario"}},
+  {"type": "game_safe",       "intensity": 0.1,  "ts": 55.0,  "meta": {"source": "alt_scenario"}},
+  {"type": "chat_hype_spike", "intensity": 0.5,  "ts": 70.0,  "meta": {"source": "alt_scenario", "note": "MILD hype - should read happy, not excited"}},
+  {"type": "game_danger",     "intensity": 0.8,  "ts": 85.0,  "meta": {"source": "alt_scenario", "note": "second danger, this time out of wave rather than celebrate"}},
+  {"type": "game_safe",       "intensity": 0.1,  "ts": 105.0, "meta": {"source": "alt_scenario"}},
+  {"type": "chat_calm",       "intensity": 0.1,  "ts": 120.0, "meta": {"source": "alt_scenario"}},
+  {"type": "idle_timeout",    "intensity": 0.1,  "ts": 140.0, "meta": {"source": "alt_scenario"}}
+]

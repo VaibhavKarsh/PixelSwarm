@@ -1,0 +1,16 @@
+# Normalise line endings. The repo was built on Windows, so every commit warned
+# about LF->CRLF conversion; this makes the intent explicit rather than relying
+# on each contributor's core.autocrlf setting. Text is stored LF in git and
+# checked out native.
+* text=auto
+
+# Binary assets, so git never tries to "fix" their line endings or diff them as
+# text. The demo artifacts are committed on purpose (see .gitignore).
+*.png binary
+*.gif binary
+*.mp4 binary
+*.mov binary
+
+# JSONL traces are text, but they are one-object-per-line records where a diff
+# is only readable line by line.
+*.jsonl text eol=lf diff

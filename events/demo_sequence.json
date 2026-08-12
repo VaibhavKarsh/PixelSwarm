@@ -1,0 +1,10 @@
+[
+  {"type": "chat_calm",       "intensity": 0.1, "ts": 15.0,  "meta": {"source": "scripted_demo"}},
+  {"type": "chat_hype_spike", "intensity": 0.6, "ts": 30.0,  "meta": {"source": "scripted_demo"}},
+  {"type": "chat_hype_spike", "intensity": 0.9, "ts": 45.0,  "meta": {"source": "scripted_demo"}},
+  {"type": "game_danger",     "intensity": 0.7, "ts": 60.0,  "meta": {"source": "scripted_demo"}},
+  {"type": "game_danger",     "intensity": 0.9, "ts": 75.0,  "meta": {"source": "scripted_demo"}},
+  {"type": "game_safe",       "intensity": 0.1, "ts": 95.0,  "meta": {"source": "scripted_demo"}},
+  {"type": "chat_calm",       "intensity": 0.1, "ts": 115.0, "meta": {"source": "scripted_demo"}},
+  {"type": "idle_timeout",    "intensity": 0.1, "ts": 130.0, "meta": {"source": "scripted_demo"}}
+]

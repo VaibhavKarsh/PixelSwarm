@@ -1,0 +1,20 @@
+{
+  "_comment": "Architecture doc Section 4. TWO kinds of rule, both binding at once. Restructured 2026-07-30: this was a flat mood-keyed object, which encoded only pairing constraints and left the transition-checker nearly vestigial - see the Section 4 note and Section 7.1d(a).",
+
+  "_by_mood_note": "Pairing constraint, checked against the tick's FINAL mood: 'while alert, do not celebrate'.",
+
+  "_alert_kept_note": "Removing the 'alert' entry was TRIED and REVERTED on 2026-07-31. The hypothesis was that the checker over-rejects legal alert actions because alert is the one mood NAMED here, so deleting it would stop the over-generalisation and fix C2. Measured directly, it did not: alert+look_around was still approved 0/8 (identical to with the rule) and alert+duck 1/8. The checker's caution around alert is not caused by its presence in this table, so removing the rule bought nothing and would have lost a correct constraint. The risk direction was also probed and was clean - with celebrate and jump newly legal at t=60 the checker still chose idle_loop 8/8 - but a change with no benefit is not worth a real constraint. See Architecture doc Section 7.1k.",
+
+  "by_mood": {
+    "sad": {"disallowed_next_action": ["celebrate", "jump"]},
+    "angry": {"disallowed_next_action": ["wave"]},
+    "alert": {"disallowed_next_action": ["celebrate", "jump"]}
+  },
+
+  "_by_previous_action_note": "Smoothness constraint, checked against the CURRENTLY COMMITTED action - the pose the character is animating right now. This is the rule Section 3.4 actually describes ('must pass through an intermediate step'). Coming out of a big energetic pose you cannot cut straight to a crouch or a scan; drop to a neutral pose for one tick first. This is the rule that fires at t=60 with real personas, because the action-picker correctly proposes look_around for the new alert mood while the character is still mid-celebration.",
+  "_jump_note": "jump carries the same rule as celebrate, added 2026-07-30 after measurement. Section 3.5's pairing guide offers the action-picker BOTH for an excited mood ('excited -> celebrate or jump'), and it legitimately picks either. Covering only celebrate left the t=60 beat dependent on which one it happened to choose - the conflict fired in 3 of 4 runs and the miss was a jump run. Cutting from an airborne jump to a crouch is exactly as abrupt as from a celebration, so this completes the rule rather than widening it to force a result.",
+  "by_previous_action": {
+    "celebrate": {"disallowed_next_action": ["duck", "look_around"]},
+    "jump": {"disallowed_next_action": ["duck", "look_around"]}
+  }
+}

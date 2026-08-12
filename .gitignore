@@ -1,0 +1,26 @@
+__pycache__/
+.ruff_cache/
+.pytest_cache/
+*.py[cod]
+.venv/
+venv/
+
+.claude/settings.local.json
+
+logs/*.jsonl
+# The provenance sidecar every trace now writes (Architecture Section 6). Same
+# reasoning as the traces themselves: a run artifact, not source. The one beside
+# a COMMITTED trace is committed with it, which is why this is not `**/*.meta.json`.
+logs/*.meta.json
+tests/reliability/*.json
+
+# Scratch renders and stray captures stay out of the repo, but the three Phase 7
+# deliverables are committed on purpose: they are what a reviewer came to see,
+# they total under 2.5 MB, and scripts/validate_repo_structure.py requires them,
+# so a fresh clone would otherwise fail its own structure check.
+demo/*.mp4
+demo/*.mov
+demo/*.gif
+!demo/pixel_swarm_explained.mp4
+!demo/pixel_swarm_demo.gif
+!demo/pixel_swarm_demo_full.gif

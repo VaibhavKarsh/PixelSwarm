@@ -1,0 +1,44 @@
+{
+  "_comment": "Phase 1 config. Enums here MUST match the prompts in Architecture doc Section 3.5 verbatim - scripts/validate_configs.py enforces that. Keys prefixed with _ are documentation only and are ignored by the validator.",
+
+  "_model_choice": "ornith:9b for ALL FOUR personas, settled in Phase 6 (2026-07-31) and updated here 2026-08-01 - this key previously still named qwen3.5:9b after the models had already changed. Architecture doc Section 7 says to start with one model for all personas and split only if a specific persona needs more capability. All 7 installed models were probed on BOTH directions of the checker's job (Section 7.1l): ornith:9b is the only one perfect on the legitimate t=60 rejection (8/8) and the happy control (8/8). Moving every persona to it took criterion C3 from 7/10 to 10/10 with zero persona failures. Latency is an explicit PRD Section 5 non-goal, so correctness wins over the faster models. Do NOT split personas across models: Section 7.1h measured that Ollama holds one model at a time, so a split pays an unload/reload twice per tick and tripled the run (279s -> 828s). The earlier '~7.5s/tick split' hypothesis was withdrawn for the same reason.",
+
+  "runtime": {
+    "provider": "ollama",
+    "host": "http://localhost:11434",
+    "timeout_s": 120,
+    "think": false,
+    "format": "json"
+  },
+  "_runtime_note": "think=false is not optional - Architecture doc Section 7.1 measured a ~100x slowdown without it. format=json is the Section 3.6 'stricter' option resolved in Section 7.2; it guarantees parseable JSON only, never correct keys or in-enum values, so Phase 3 still needs the regex extractor and enum checks.",
+
+  "moods": ["idle", "happy", "excited", "alert", "sad", "angry"],
+  "actions": ["idle_loop", "wave", "jump", "duck", "celebrate", "look_around"],
+
+  "_checker_split_note": "checker moved to ornith:9b on 2026-07-31, the per-persona split Section 7 sanctions ('split personas onto different model sizes/families later if you find a specific persona needs more capability'). Phase 6 cycle 2 measured 3 of 4 C3 misses as the checker either approving an illegal transition or naming an illegal fallback, so it was probed directly on the exact failing t=60 tick (committed excited/celebrate, proposed alert/look_around; only idle_loop and wave are legal). Results at n=8: ornith:9b 8/8, qwen3.5:9b 5/8, gemma4:e2b 4/8, nemotron-3-nano:4b 2/8, granite4.1:3b 0/8. Latency cost is negligible (13.6s vs 12.3s per call). Note granite4.1:3b scored 8/8 under the OLD single-rule table and 0/8 under two rules - the smoothness rule is materially harder, and small models do not carry it.",
+
+  "_thrash_note": "SPLITTING ACROSS TWO LARGE MODELS IS NOT FREE. Running the checker on ornith:9b while the other three used qwen3.5:9b tripled the tick loop (279s -> 828s per run) because Ollama unloads and reloads a ~6GB model twice per tick. Measured 2026-07-31; the arithmetic accounts for it almost exactly (~230s inference + ~600s swapping). The per-persona probe missed this entirely because it measured each model already resident. Section 7.1c's '~7.5s/tick' split hypothesis has the same flaw and is withdrawn. Keep all four personas on ONE model unless a future split uses models small enough to stay co-resident.",
+
+  "models": {
+    "mood": "ornith:9b",
+    "action": "ornith:9b",
+    "line": "ornith:9b",
+    "checker": "ornith:9b"
+  },
+
+  "recent_events_max_count": 5,
+  "recent_events_max_age_s": 60,
+  "_window_note": "Architecture doc Section 2. Whichever limit binds first. 60s admits ~4 events at the Demo Script's ~15s spacing, deliberately wide enough that at t=60 the window still holds both chat_hype_spike events alongside the new game_danger - the celebratory momentum has to remain visible for the t=60 conflict to exist at all.",
+
+  "tick_timer_s": 15,
+  "_tick_note": "Architecture doc Section 7. Event-triggered ticks plus this idle timer. The harness must SKIP a timer tick if one is already in flight rather than queueing it, and event replay must wait for an in-flight tick rather than overlapping it. With ornith:9b a tick takes ~32s against this 15s interval, so that path is exercised on essentially every tick, not rarely. Ticks cannot overlap by construction anyway - v1 is a single-process script (Section 9) - so 'wait, never overlap' is what actually happens and the trace stays in event order.",
+
+  "enforce_grounded_rejections": true,
+  "_grounded_rejections_note": "Architecture doc Section 5, second invariant, added 2026-08-11. The harness overrules a transition-checker REJECTION when the rejected action is legal under Section 4, mirroring the existing rule that it overrules an illegal COMMIT. Justified because every rule in transitions.json forbids an action - neither rule kind can forbid a mood or a line - so a rejection of a legal action cites no rule that exists. Measured cause: 72% of the checker's rejections were of legal actions with invented justifications (Section 7.1q), and no acceptance criterion could see it because the substituted idle_loop is itself legal. Set false to measure the swarm without the guard; config_version distinguishes the two in the trace.",
+
+  "fallback": {
+    "action": "idle_loop",
+    "line": null
+  },
+  "_fallback_note": "Architecture doc Section 5. mood falls back to current_mood, which is runtime state and so is not configurable here. idle_loop is disallowed by no rule in transitions.json, so it is always a legal commit - that is why it, and not current_action, is the pinned fallback."
+}

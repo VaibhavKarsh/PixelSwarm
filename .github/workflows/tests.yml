@@ -1,0 +1,36 @@
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  suite:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      # The whole suite runs with every persona mocked, so CI needs no model,
+      # no GPU and no network beyond pip. The live checks are the only part that
+      # needs Ollama and they are excluded by default - `run_all.py` prints that
+      # it skipped them rather than passing silently.
+      - name: Run the suite
+        run: python tests/run_all.py
+        env:
+          PYTHONIOENCODING: utf-8
+
+      # The repo was developed on Windows; this is the only thing that would
+      # catch a path or encoding assumption that happens to work there.
+      - name: Confirm the mocked demo runs end to end
+        run: python -m swarm.harness --quiet
+        env:
+          PYTHONIOENCODING: utf-8

@@ -1,0 +1,98 @@
+{
+  "config_version": "d3f620203e0a",
+  "recipe": 1,
+  "scenario": "demo_sequence.json",
+  "mode": "mood,action,line,checker",
+  "models": {
+    "action": "ornith:9b",
+    "checker": "ornith:9b",
+    "line": "ornith:9b",
+    "mood": "ornith:9b"
+  },
+  "prompt_hashes": {
+    "mood": "5df3a018f75f",
+    "action": "848956283e14",
+    "line": "99db009aee45",
+    "check": "7c76fd7da31d"
+  },
+  "personas_config": {
+    "runtime": {
+      "provider": "ollama",
+      "host": "http://localhost:11434",
+      "timeout_s": 120,
+      "think": false,
+      "format": "json"
+    },
+    "moods": [
+      "idle",
+      "happy",
+      "excited",
+      "alert",
+      "sad",
+      "angry"
+    ],
+    "actions": [
+      "idle_loop",
+      "wave",
+      "jump",
+      "duck",
+      "celebrate",
+      "look_around"
+    ],
+    "models": {
+      "mood": "ornith:9b",
+      "action": "ornith:9b",
+      "line": "ornith:9b",
+      "checker": "ornith:9b"
+    },
+    "recent_events_max_count": 5,
+    "recent_events_max_age_s": 60,
+    "tick_timer_s": 15,
+    "enforce_grounded_rejections": true,
+    "fallback": {
+      "action": "idle_loop",
+      "line": null
+    },
+    "real_personas": [
+      "mood",
+      "action",
+      "line",
+      "checker"
+    ]
+  },
+  "transitions_config": {
+    "by_mood": {
+      "sad": {
+        "disallowed_next_action": [
+          "celebrate",
+          "jump"
+        ]
+      },
+      "angry": {
+        "disallowed_next_action": [
+          "wave"
+        ]
+      },
+      "alert": {
+        "disallowed_next_action": [
+          "celebrate",
+          "jump"
+        ]
+      }
+    },
+    "by_previous_action": {
+      "celebrate": {
+        "disallowed_next_action": [
+          "duck",
+          "look_around"
+        ]
+      },
+      "jump": {
+        "disallowed_next_action": [
+          "duck",
+          "look_around"
+        ]
+      }
+    }
+  }
+}
